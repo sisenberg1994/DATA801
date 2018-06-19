@@ -1,6 +1,7 @@
 library(ggplot2)
 library(gridExtra)
 library(Hmisc)
+library(miscTools)
 library(sjPlot)
 library(stringr)
 library(tidyverse)
@@ -96,6 +97,41 @@ graph <- graph + theme(axis.text.x = element_text(angle = 90, hjust = 1))
 graph <- graph + expand_limits(y = c(0, .60))
 
 
+# graphing ticket probabilities in each county, separated by in/out of state
+
+in.state.tickets <- select(tickets, county_name, tickets.per.violation)
+out.state.tickets <- select(stops.tickets.out, county_name, tickets.per.violation)
+
+out.of.state <- replicate(10, factor("out of state"))
+in.state <- replicate(10, factor("in state"))
+
+in.state.tickets <- add_column(in.state.tickets,in.state)
+out.state.tickets <- add_column(out.state.tickets, out.of.state)
+
+colnames(in.state.tickets)[3] <- "in/out of state"
+colnames(out.state.tickets)[3] <- "in/out of state"
+
+final <- rbind(in.state.tickets,out.state.tickets)
+
+ggplot(final, aes(factor(county_name), `in/out of state`, fill = tickets.per.violation)) + 
+  geom_col(position = "dodge") + 
+  scale_fill_brewer(palette = "Set1")
+
+final.graph <-ggplot(data=final, aes(x=factor(county_name), y=tickets.per.violation, fill=`in/out of state`)) 
+final.graph <- final.graph + geom_bar(stat="identity", position=position_dodge())
+final.graph <- final.graph + theme_light()
+final.graph <- final.graph + xlab("County Name") + ylab("Probability (Ticket | Violation)")
+final.graph <- final.graph + ggtitle("Probability of Ticket Given Violation by County: \n In/Out of State Drivers")
+final.graph <- final.graph + theme(plot.title = element_text(hjust = 0.5))
+final.graph <- final.graph + theme(axis.text.x = element_text(angle = 90, hjust = 1))
+final.graph <- final.graph + expand_limits(y = c(0, .70))
+final.graph
+
+
+
+
+
+
 
 #-------------------------------------------------------------------------#
 # SAM'S CODE #
@@ -124,6 +160,8 @@ chisq.test(table(nh$driver_race, nh$stop_outcome))
 pdf("race_outcome_proportion.pdf")
 grid.table(round(prop.table(table(nh$driver_race, nh$stop_outcome),1),2))
 dev.off()
+
+
 
 
 
@@ -172,6 +210,9 @@ dev.off()
 
 
 
+
+
+
 #-------------------------------------------------------------------------#
 # JOANNA'S CODE #
 
@@ -190,7 +231,7 @@ PercentFemaleSpeeders<-NumberFemaleSpeeders/(NumberFemaleSpeeders+NumberMaleSpee
 PercentageMaleSpeeders<-(100-PercentFemaleSpeeders)
 
 
-# -------------------------------------------
+# -------------------
 # What percentage of females/males who get pulled each type of stop outcome?
 
 # Filter the data so that we only include entries in which gender was specified.

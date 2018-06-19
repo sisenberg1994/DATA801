@@ -40,6 +40,7 @@ graph <- graph + xlab("County Name") + ylab("Violations per Capita") + ggtitle("
 graph <- graph + theme(plot.title = element_text(hjust = 0.5))
 graph <- graph + theme(axis.text.x = element_text(angle = 90, hjust = 1))
 graph <- graph + expand_limits(y = c(0, .20))
+graph
 
 ### Section 2: Probability of ticket given violation by county, nh drivers ###
 
@@ -56,13 +57,12 @@ tickets <- mutate(tickets, tickets.per.violation = speeding.tickets/speeding.vio
 tickets
 
 
-graph <- ggplot(tickets, aes(x = county_name, y = tickets.per.violation)) + geom_bar(stat = "identity", fill = 'deepskyblue3')
+graph <- ggplot(tickets, aes(x = county_name, y = tickets.per.violation)) + geom_bar(stat = "identity", fill = 'tomato')
 graph <- graph + theme_light()
 graph <- graph + xlab("County Name") + ylab("Probability (Ticket | Violation)") + ggtitle("Probability of Ticket Given Violation by County: NH Residents")
 graph <- graph + theme(plot.title = element_text(hjust = 0.5))
 graph <- graph + theme(axis.text.x = element_text(angle = 90, hjust = 1))
 graph <- graph + expand_limits(y = c(0, .60))
-graph
 
 
 ### probability of ticket given violation by county: out of state drivers ###
@@ -89,9 +89,9 @@ colnames(stops.tickets.out)[3] <- "violations"
 stops.tickets.out <- mutate(stops.tickets.out, tickets.per.violation = speeding.tickets/violations)
 stops.tickets.out
 
-graph <- ggplot(stops.tickets.out, aes(x = county_name, y = tickets.per.violation)) + geom_bar(stat = "identity", fill = 'deepskyblue3')
+graph <- ggplot(stops.tickets.out, aes(x = county_name, y = tickets.per.violation)) + geom_bar(stat = "identity", fill = 'springgreen4')
 graph <- graph + theme_light()
-graph <- graph + xlab("County Name") + ylab("Probability (Ticket | Violation)") + ggtitle("Probability of Ticket Given Violation by County: Out of State Drivers")
+graph <- graph + xlab("County Name") + ylab("Probability (Ticket | Violation)") + ggtitle("Probability of Ticket Given Violation by County: \n Out of State Drivers")
 graph <- graph + theme(plot.title = element_text(hjust = 0.5))
 graph <- graph + theme(axis.text.x = element_text(angle = 90, hjust = 1))
 graph <- graph + expand_limits(y = c(0, .60))
@@ -125,8 +125,6 @@ final.graph <- final.graph + ggtitle("Probability of Ticket Given Violation by C
 final.graph <- final.graph + theme(plot.title = element_text(hjust = 0.5))
 final.graph <- final.graph + theme(axis.text.x = element_text(angle = 90, hjust = 1))
 final.graph <- final.graph + expand_limits(y = c(0, .70))
-final.graph
-
 
 
 
